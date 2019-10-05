@@ -1,5 +1,11 @@
+
+jasypt:
+  encryptor:
+    #1234567
+    password: ${ENCRYPT_PASSWORD}
+
 server:
-  port: 8000
+  port: 8001
 spring:
   application:
     name: chengw-config-server
@@ -23,7 +29,7 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
   client:
     register-with-eureka: true
-    fetch-registry: true
+    fetch-registry: false
     service-url:
       defaultZone: http://localhost:8000/eureka/
 
