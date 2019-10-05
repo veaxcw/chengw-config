@@ -22,13 +22,16 @@ spring:
           timeout: 1000
           refresh-rate: 10
 
-
+#服务注册
 eureka:
   instance:
+#    将ip注册到Eureka server 上，不配置 则是主机名
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
   client:
+    #是否将自己注册到Eureka server
     register-with-eureka: true
+    #是否从Eureka server获取注册信息
     fetch-registry: false
     service-url:
       defaultZone: http://localhost:8000/eureka/
