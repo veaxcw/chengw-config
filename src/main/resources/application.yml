@@ -1,0 +1,31 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: chengw-config-server
+  cloud:
+    config:
+      label: master
+      server:
+        git:
+          uri: https://github.com/veaxcw/chengw-config-repo.git
+          username: ${git_username}
+          password: ${git_password}
+          search-paths: /{application}
+          force-pull: true
+          timeout: 1000
+          refresh-rate: 10
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8000/eureka/
+
+  server:
+    enable-self-preservation: false
