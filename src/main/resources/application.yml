@@ -67,6 +67,7 @@ eureka:
     #    将ip注册到Eureka server 上，不配置 则是主机名
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
+    ip-address: 47.93.19.130
   client:
     #是否将自己注册到Eureka server
     register-with-eureka: true
