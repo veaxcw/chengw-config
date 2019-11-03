@@ -5,4 +5,4 @@ VOLUME /tmp
 #将应用jar包复制到 app.jar
 ADD chengw-config-0.0.1-SNAPSHOT.jar app.jar
 ENV spring.profiles.active="test"
-ENTRYPOINT ["java","-jar","-Xmx350m","-Xms350m","/app.jar"]
+ENTRYPOINT ["java","-jar","-Xmx350m","-Xms350m","--ENCRYPT_PASSWORD=1234567","/app.jar"]
