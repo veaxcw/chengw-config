@@ -15,10 +15,13 @@
     <description>服务配置中心</description>
 
 
+
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR3</spring-cloud.version>
-        <docker.image.prefix>spring-cloud</docker.image.prefix>
+        <docker.image.prefix>crafts</docker.image.prefix>
+        <dockerfile.maven.version>1.4.0</dockerfile.maven.version>
+        <docker.registry>registry.veax.top</docker.registry>
         <env>test</env>
     </properties>
 
@@ -62,25 +65,66 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Copy Dockerfile to build dir.</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/docker</directory>
+                                    <includes>
+                                        <include>Dockerfile</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <!--  docker 插件-->
             <plugin>
                 <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <imageName>${docker.image.prefix}/${project.artifactId}-${env}</imageName>
-                    <!--dockerFile目录-->
-                    <dockerDirectory>src/main/docker</dockerDirectory>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <!--用于指定需要复制的目录-->
-                            <directory>${project.build.directory}</directory>
-                            <!--用于指定需要复制的文件-->
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile.maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>install-push-image</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                        <configuration>
+                            <repository>${docker.registry}/${docker.image.prefix}/${project.artifactId}-${env}</repository>
+                            <contextDirectory>${project.build.directory}</contextDirectory>
+                            <tag>latest</tag>
+                        </configuration>
+                    </execution>
+                </executions>
+<!--                <configuration>-->
+<!--                    <imageName>${docker.registry}}/${docker.image.prefix}/${project.artifactId}-${env}</imageName>-->
+<!--                    &lt;!&ndash;dockerFile目录&ndash;&gt;-->
+<!--                    <dockerDirectory>src/main/docker</dockerDirectory>-->
+<!--                    <resources>-->
+<!--                        <resource>-->
+<!--                            <targetPath>/</targetPath>-->
+<!--                            &lt;!&ndash;用于指定需要复制的目录&ndash;&gt;-->
+<!--                            <directory>${project.build.directory}</directory>-->
+<!--                            &lt;!&ndash;用于指定需要复制的文件&ndash;&gt;-->
+<!--                            <include>${project.build.finalName}.jar</include>-->
+<!--                        </resource>-->
+<!--                    </resources>-->
+<!--                </configuration>-->
             </plugin>
 
         </plugins>
